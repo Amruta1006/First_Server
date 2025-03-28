@@ -5,12 +5,23 @@ const PORT = 5001;
 
 //API Endpoint 1
 app.get("/", (req, res) => {
-    res.send("Hello World");
+   res.json({
+        message: "This is main api",
+   });
     });
 
 //API Endpoint 2
 app.get("/about", (req, res) => {
-    res.send("About Page"); 
+    res.json({
+        message: "About Page",
+    });
+   });
+
+   //API Endpoint 3
+   app.post("/contact", (req, res) => {
+    res.json({
+        message: "Contact Page",
+    });
    });
 
 app.listen(PORT, () => {
