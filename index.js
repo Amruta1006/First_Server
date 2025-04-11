@@ -165,6 +165,15 @@ app.patch("/students/:id",(req,res)=>{
   });
 })
 
+//query parameter
+app.get("/students/search", (req, res) => {
+  const { name } = req.query;
+  res.json({
+    success: true,
+    data: STUDENTS,
+    message: `You searched for ${name}`,
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
