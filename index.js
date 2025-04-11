@@ -25,7 +25,22 @@ app.get("/students", (req, res) => {
   });
 });
 
-
+app.delete("/students:id", (req, res) => {
+    console.log(req);
+    const {id} = req.params;
+    const studentIndex = STUDENTS.findIndex((student) => student.id === id);
+    if (studentIndex == -1) {
+            return res.json({
+                success: false,
+                message: `Student with id: ${id} does not exist`,
+            });
+        }
+        STUDENTS.splice(studentIndex, 1);
+        return res.json({
+            success: true,
+            message: `Student with id: ${id} deleted successfully`,
+    });   
+});
 
 app.post("/students", (req, res) => {
   // const name = req.body.name;
