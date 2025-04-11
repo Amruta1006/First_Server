@@ -17,6 +17,8 @@ const STUDENTS = [
   },
 ];
 
+
+//get method
 app.get("/students", (req, res) => {
   res.json({
     success: true,
@@ -25,6 +27,7 @@ app.get("/students", (req, res) => {
   });
 });
 
+//delete method
 app.delete("/students:id", (req, res) => {
     console.log(req);
     const {id} = req.params;
@@ -42,6 +45,47 @@ app.delete("/students:id", (req, res) => {
     });   
 });
 
+//put method
+app.put("/students/:id",(req,res)=>{
+  const {id} = req.params;
+  const {name, city} = req.body;
+
+  if (!name || !city || !id) {
+    return res.json({
+      success: false,
+      message: "Please provide all required fields",
+    });
+  }
+
+  let studentIndex = -1;
+  STUDENTS.forEach((stud, i)=>{
+    if(stud.id == id){
+      studentIndex = i;
+    }
+  })
+
+  if(studentIndex == -1){
+    return res.json({
+      success: false,
+      message: `Student with id: ${id} does not exist`,
+    });
+  }
+
+  STUDENTS[studentIndex] ={
+    id: parseInt(id),
+    name: name,
+    city: city,
+  }
+
+  res.json({
+    success: true,
+    data: STUDENTS[studentIndex],
+    message: `Student with id: ${id} updated successfully`,
+  });
+})
+
+
+//post method
 app.post("/students", (req, res) => {
   // const name = req.body.name;
   // const city = req.body.city;
