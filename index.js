@@ -1,36 +1,100 @@
-import express from 'express';
-
+import express from "express";
 const app = express();
+app.use(express.json());
 const PORT = 5001;
 
-//API Endpoint 1
-app.get("/", (req, res) => {
-   res.json({
-        message: "This is main api",
-   });
-    });
+//This is temporary data store
+const STUDENTS = [
+  {
+    id: "1",
+    name: "Kasturi",
+    city: "Pune",
+  },
+  {
+    id: "2",
+    name: "Amruta",
+    city: "Kolhapur",
+  },
+];
 
-//API Endpoint 2
-app.get("/about", (req, res) => {
-    res.json({
-        message: "About Page",
-    });
-   });
+app.get("/students", (req, res) => {
+  res.json({
+    success: true,
+    data: STUDENTS,
+    message: "Student fetched successfully",
+  });
+});
 
-   //API Endpoint 3
-   app.post("/contact", (req, res) => {
-    res.json({
-        message: "Contact Page",
+
+
+app.post("/students", (req, res) => {
+  // const name = req.body.name;
+  // const city = req.body.city;
+  // const id = req.body.id;
+
+  //Destructuring
+  const { name, city, id } = req.body;
+
+  //Validation
+  if (!name || !city || !id) {
+    return res.json({
+      success: false,
+      message: "Please provide all required fields",
     });
-   });
-   
-    //API Endpoint 4
-   app.get("/students", (req, res) => {
-    res.json({
-        students: ["Amruta","Shree","Kukii"],
-    });
-   });
+  }
+
+  //check if anyone have exist with same id
+  for (const student of STUDENTS) {
+    if (student.id === id) {
+      return res.json({
+        success: false,
+        message: "Student already exists",
+      });
+    }
+  }
+
+  const studentObj = {
+    id: id,
+    name: name,
+    city: city,
+  };
+  STUDENTS.push(studentObj);
+
+  res.json({
+    success: true,
+    data: studentObj,
+    message: "Student added successfully",
+  });
+});
 
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-    });
+  console.log(`Server is running on port ${PORT}`);
+});
+
+//API Endpoint 1
+// app.get("/", (req, res) => {
+//    res.json({
+//         message: "This is main api",
+//    });
+//     });
+
+//API Endpoint 2
+// app.get("/about", (req, res) => {
+//     res.json({
+//         message: "About Page",
+//     });
+//    });
+
+//API Endpoint 3
+//    app.post("/contact", (req, res) => {
+//     res.json({
+//         message: "Contact Page",
+//     });
+//    });
+
+//API Endpoint 4
+//    app.get("/students", (req, res) => {
+//     res.json({
+//         students: ["Amruta","Shree","Kukii"],
+//     });
+//    });
