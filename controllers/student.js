@@ -22,7 +22,7 @@ const getHealth = (req, res) => {
 
 //get api
 const getStudents = (req, res) => {
-  res.json({
+  res.status(200).json({
     success: true,
     data: STUDENTS,
     message: "Student fetched successfully",
@@ -40,7 +40,7 @@ const postStudents=(req, res) => {
   
     //Validation
     if (!name || !city || !id) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "Please provide all required fields",
       });
@@ -49,7 +49,7 @@ const postStudents=(req, res) => {
     //check if anyone have exist with same id
     for (const student of STUDENTS) {
       if (student.id === id) {
-        return res.json({
+        return res.status(400).json({
           success: false,
           message: "Student already exists",
         });

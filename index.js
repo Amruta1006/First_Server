@@ -5,12 +5,6 @@ app.use(express.json());
 const PORT = 5001; 
 
 //health API
-// app.get("/health",(req,res)=>{
-//   res.json({
-//     success:true,
-//     message:"Server is running",
-//   });
-// });
 app.get("/health", getHealth);
 
 //get method
