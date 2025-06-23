@@ -1,181 +1,99 @@
-//This is temporary data store
-const STUDENTS = [
-  {
-    id: "1",
-    name: "Kasturi",
-    city: "Pune",
-  },
-  {
-    id: "2",
-    name: "Amruta",
-    city: "Kolhapur",
-  },
+let students = [
+  { id: 1, name: "Amruta", age: 22, city: "Kolhapur" },
+  { id: 2, name: "Kasturi", age: 15, city: "Pune" },
+  { id: 3, name: "Akshata", age: 19, city: "Thane" },
 ];
 
-//health api
-const getHealth = (req, res) => {
-  res.json({
-    success: true,
-    message: "Server is running",
-  });
+const addStudent = (req, res) => {
+  try {
+    const { name, age, city } = req.body;
+    const newStudent = { id: students.length + 1, name, age, city };
+    students.push(newStudent);
+    res.status(200).json({
+      message: "Student Added Successfully",
+      newStudent,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Student not Added",
+      error: error.message,
+    });
+  }
 };
 
-//get api
 const getStudents = (req, res) => {
-  res.status(200).json({
-    success: true,
-    data: STUDENTS,
-    message: "Student fetched successfully",
-  });
+  try {
+    if (students.length === 0) {
+      return res.status(404).json({
+        message: "No students available. Add a student.",
+      });
+    }
+    res.status(200).json({
+      message: "Student Founded",
+      students,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Student not found",
+      error: error.message,
+    });
+  }
 };
 
-//post api
-const postStudents=(req, res) => {
-    // const name = req.body.name;
-    // const city = req.body.city;
-    // const id = req.body.id;
-  
-    //Destructuring
-    const { name, city, id } = req.body;
-  
-    //Validation
-    if (!name || !city || !id) {
-      return res.status(400).json({
-        success: false,
-        message: "Please provide all required fields",
-      });
-    }
-  
-    //check if anyone have exist with same id
-    for (const student of STUDENTS) {
-      if (student.id === id) {
-        return res.status(400).json({
-          success: false,
-          message: "Student already exists",
-        });
-      }
-    }
-  
-    const studentObj = {
-      id: id,
-      name: name,
-      city: city,
-    };
-    STUDENTS.push(studentObj);
-  
-    res.json({
-      success: true,
-      data: studentObj,
-      message: "Student added successfully",
-    });
-}
-
-//delete api
-// const deleteStudentsById = (req, res) => {
-//     console.log(req);
-//     const {id} = req.params;
-//     const studentIndex = STUDENTS.findIndex((student) => student.id === id);
-//     if (studentIndex == -1) {
-//             return res.json({
-//                 success: false,
-//                 message: `Student with id: ${id} does not exist`,
-//             });
-//         }
-//         STUDENTS.splice(studentIndex, 1);
-//         return res.json({
-//             success: true,
-//             message: `Student with id: ${id} deleted successfully`,
-//     });   
-// }
-
-
-//put api
-const putStudentsById = (req,res)=>{
-    const {id} = req.params;
-    const {name, city} = req.body;
-  
-    if (!name || !city || !id) {
-      return res.json({
-        success: false,
-        message: "Please provide all required fields",
-      });
-    }
-  
-    let studentIndex = -1;
-    STUDENTS.forEach((stud, i)=>{
-      if(stud.id == id){
-        studentIndex = i;
-      }
-    })
-  
-    if(studentIndex == -1){
-      return res.json({
-        success: false,
-        message: `Student with id: ${id} does not exist`,
-      });
-    }
-  
-    STUDENTS[studentIndex] ={
-      id: parseInt(id),
-      name: name,
-      city: city,
-    }
-  
-    res.json({
-      success: true,
-      data: STUDENTS[studentIndex],
-      message: `Student with id: ${id} updated successfully`,
+const deleteStudent = (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const index = students.findIndex((std) => std.id === id);
+    students.splice(index, 1);
+    res.status(200).json({ message: "Student deleted successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Student not able to Delete",
+      error: error.message,
     });
   }
+};
 
-  //patch api
-  const patchStudentsById = (req,res)=>{
-    const {id} = req.params;
-    const {city} = req.body;
-  
-    if (!city ) {
-      return res.json({
-        success: false,
-        message: "Please provide city name",
-      });
-    }
-  
-    let studentIndex = -1;
-    STUDENTS.forEach((stud, i)=>{
-      if(stud.id == id){
-        studentIndex = i;
-      }
-    })
-  
-    if(studentIndex == -1){
-      return res.json({
-        success: false,
-        message: `Student with id: ${id} does not exist`,
-      });
-    }
-  
-    
-    const existingStudent = STUDENTS[studentIndex];
-    const updatedStudent = {
-      ...existingStudent,
-      city: city,
-    }
-    STUDENTS[studentIndex] = updatedStudent;
-    res.json({
-      success: true,
-      data: updatedStudent,
-      message: `Student with id: ${id} updated successfully`,
+const updateStudent = (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { name, age, city } = req.body;
+    const index = students.findIndex((std) => std.id === id);
+    students[index] = { ...students[index], name, age, city };
+    res.status(200).json({
+      message: "Student Updated Successfully",
+      updatedStudent: students[index],
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update student",
+      error: error.message,
     });
   }
+};
 
-  //query parameter
-  const getStudentsSearch = (req, res) => {
-    const { name } = req.query;
-    res.json({
-      success: true,
-      data: STUDENTS,
-      message: `You searched for ${name}`,
+const updateAge = (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+    const { age } = req.body;
+    const index = students.findIndex((std) => std.id === id);
+    students[index] = { ...students[index], age };
+    res.status(200).json({
+      message: "Updated age successfully",
+      updatedStudent: students[index],
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update student age",
+      error: error.message,
     });
   }
+};
 
-export { getHealth, getStudents,postStudents,putStudentsById ,patchStudentsById,getStudentsSearch };
+module.exports = {
+  addStudent,
+  getStudents,
+  deleteStudent,
+  updateStudent,
+  updateAge,
+};

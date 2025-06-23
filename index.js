@@ -1,6 +1,8 @@
 import express from "express";
+import cors from "cors";
 import { getHealth,getStudents,postStudents,putStudentsById,patchStudentsById,getStudentsSearch  } from "./controllers/student.js";
 const app = express();
+app.use(cors());
 app.use(express.json());
 const PORT = 5001; 
 
